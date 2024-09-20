@@ -1,27 +1,30 @@
-const { Model, DataTypes } = require('sequelize');
-const sequelize = require('../config/config'); // Adjust path as necessary
+const { Model, DataTypes } = require("sequelize");
+const sequelize = require("../config/config"); // Adjust path as necessary
 
 class User extends Model {}
 
-User.init({
+User.init(
+  {
     id: {
-        type: DataTypes.INTEGER,
-        primaryKey: true,
-        autoIncrement: true, // Enable auto-increment
+      type: DataTypes.INTEGER,
+      primaryKey: true,
+      autoIncrement: true, // Enable auto-increment
     },
     name: {
-        type: DataTypes.STRING,
-        allowNull: false,
+      type: DataTypes.STRING,
+      allowNull: false,
     },
     email: {
-        type: DataTypes.STRING,
-        unique: true,
-        allowNull: false,
+      type: DataTypes.STRING,
+      unique: true,
+      allowNull: false,
     },
-}, {
+  },
+  {
     sequelize,
-    modelName: 'User',
+    modelName: "User",
     timestamps: true, // Automatically manages createdAt and updatedAt fields
-});
+  }
+);
 
 module.exports = User;
