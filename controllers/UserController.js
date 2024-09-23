@@ -1,4 +1,5 @@
 const User = require("../models/user");
+const helper = require("../helper/helper")
 
 exports.create = async (req, res) => {
   try {
@@ -55,31 +56,64 @@ exports.delete = async (req, res) => {
   }
 };
 
-exports.insertData = async (req, res) => {
+// exports.insertData = async (req, res) => {
+//   try {
+//     const usersData = req.body;
+//     console.log(usersData);
+//     // Input validation
+//     if (!Array.isArray(usersData) || usersData.length === 0) {
+//       return res
+//         .status(400)
+//         .json({ message: "Invalid input: expected an array of users." });
+//     }
+//     const results = [];
+//     for (const Data of usersData) {
+//       if (!Data.name || !Data.email) {
+//         return res
+//           .status(400)
+//           .json({ message: "Name and email are required for each user." });
+//       }
+
+//       const user = await User.upsert(Data);
+//       results.push(user);
+//     }
+
+//     res.status(201).json({ message: "Users created/updated", results });
+//   } catch (error) {
+//     console.error(error);
+//     res.status(500).json({ message: "Error occurred", error });
+//   }
+// };
+
+
+exports.insertData = async(req,res)=>{
   try {
-    const usersData = req.body;
-    console.log(usersData);
-    // Input validation
-    if (!Array.isArray(usersData) || usersData.length === 0) {
+     const usersData = req.body;
+     const results = [];
+     if (!Array.isArray(usersData) || usersData.length === 0) {
       return res
         .status(400)
         .json({ message: "Invalid input: expected an array of users." });
     }
-    const results = [];
-    for (const Data of usersData) {
-      if (!Data.name || !Data.email) {
-        return res
-          .status(400)
-          .json({ message: "Name and email are required for each user." });
-      }
 
-      const user = await User.upsert(Data);
+    const chunked_Data = helper.chunkArray(usersData , 50)
+    for(let i = 0 ; i < chunked_Data.length;i++ )
+      
+    {
+      for(let j of chunked_Data[i] )
+      {
+        
+     
+      const [user] = await User.upsert(j);
       results.push(user);
+      }
     }
-
     res.status(201).json({ message: "Users created/updated", results });
+    
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error occurred", error });
+    
   }
-};
+
+}
