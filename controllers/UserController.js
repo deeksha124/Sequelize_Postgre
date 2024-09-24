@@ -1,5 +1,6 @@
 const User = require("../models/user");
-const helper = require("../helper/helper")
+const sequelize = require("../config/config");
+const helper = require("../helper/helper");
 
 exports.create = async (req, res) => {
   try {
@@ -56,68 +57,50 @@ exports.delete = async (req, res) => {
   }
 };
 
-// exports.insertData = async (req, res) => {
-//   try {
-//     const usersData = req.body;
-//     console.log(usersData);
-//     // Input validation
-//     if (!Array.isArray(usersData) || usersData.length === 0) {
-//       return res
-//         .status(400)
-//         .json({ message: "Invalid input: expected an array of users." });
-//     }
-//     const results = [];
-//     for (const Data of usersData) {
-//       if (!Data.name || !Data.email) {
-//         return res
-//           .status(400)
-//           .json({ message: "Name and email are required for each user." });
-//       }
+const bulkProcess = async (usersData) => {
+  // Chunk the data
+  const chunkedData = helper.chunkArray(usersData, 50);
+  await sequelize.transaction(async (transaction) => {
 
-//       const user = await User.upsert(Data);
-//       results.push(user);
-//     }
+  // for (const chunk of chunkedData)
+    for (let chunk = 0; chunk > chunkedData.length;i++) {
 
-//     res.status(201).json({ message: "Users created/updated", results });
-//   } catch (error) {
-//     console.error(error);
-//     res.status(500).json({ message: "Error occurred", error });
-//   }
-// };
+      console.log("chunk-----" , chunk)
+    // await sequelize.transaction(async (transaction) => {
+      const upsertPromises = []; // Array to hold promises
+      
+
+      for (let i = 0; i < chunk.length; i++) {
+        const user = chunk[i];
+        const upsertPromise = await User.upsert(user, { transaction });
+        upsertPromises.push(upsertPromise);
+      }
+      await Promise.allSettled(upsertPromises);
+    // });
+  }
+ 
+})
+console.log("Data saved successfully")
+
+};
 
 exports.insertData = async (req, res) => {
   try {
     const usersData = req.body;
-    const results = [];
 
     if (!Array.isArray(usersData) || usersData.length === 0) {
-      return res.status(400).json({ message: "Invalid input: expected an array of users." });
+      return res
+        .status(400)
+        .json({ message: "Invalid input: expected an array of users." });
     }
-
+    bulkProcess(usersData);
     // Send immediate response
     res.status(202).json({ message: "Data saving in process" });
-
-    // Process the data asynchronously
-    const chunked_Data = helper.chunkArray(usersData, 50);
-
-    (async () => {
-      for (let i = 0; i < chunked_Data.length; i++) {
-        for (let j of chunked_Data[i]) {
-          try {
-            const [user] = await User.upsert(j);
-            results.push(user);
-          } catch (err) {
-            console.error("Error saving user:", err);
-          }
-        }
-      }
-      // Optionally, you could log or handle the results after processing
-      // console.log("Data saving complete", results);
-      console.log("Data saving complete");
-    })();
-
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error occurred", error });
   }
 };
+
+
+
