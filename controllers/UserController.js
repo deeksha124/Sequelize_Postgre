@@ -85,35 +85,39 @@ exports.delete = async (req, res) => {
 //   }
 // };
 
-
-exports.insertData = async(req,res)=>{
+exports.insertData = async (req, res) => {
   try {
-     const usersData = req.body;
-     const results = [];
-     if (!Array.isArray(usersData) || usersData.length === 0) {
-      return res
-        .status(400)
-        .json({ message: "Invalid input: expected an array of users." });
+    const usersData = req.body;
+    const results = [];
+
+    if (!Array.isArray(usersData) || usersData.length === 0) {
+      return res.status(400).json({ message: "Invalid input: expected an array of users." });
     }
 
-    const chunked_Data = helper.chunkArray(usersData , 50)
-    for(let i = 0 ; i < chunked_Data.length;i++ )
-      
-    {
-      for(let j of chunked_Data[i] )
-      {
-        
-     
-      const [user] = await User.upsert(j);
-      results.push(user);
+    // Send immediate response
+    res.status(202).json({ message: "Data saving in process" });
+
+    // Process the data asynchronously
+    const chunked_Data = helper.chunkArray(usersData, 50);
+
+    (async () => {
+      for (let i = 0; i < chunked_Data.length; i++) {
+        for (let j of chunked_Data[i]) {
+          try {
+            const [user] = await User.upsert(j);
+            results.push(user);
+          } catch (err) {
+            console.error("Error saving user:", err);
+          }
+        }
       }
-    }
-    res.status(201).json({ message: "Users created/updated", results });
-    
+      // Optionally, you could log or handle the results after processing
+      // console.log("Data saving complete", results);
+      console.log("Data saving complete");
+    })();
+
   } catch (error) {
     console.error(error);
     res.status(500).json({ message: "Error occurred", error });
-    
   }
-
-}
+};
