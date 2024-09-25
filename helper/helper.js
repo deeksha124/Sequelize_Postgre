@@ -32,6 +32,7 @@ function genrateRendomstring(length){
 
 exports.ranndomUser = (count)=>{
   const users = new Set();
+  console.log("users", users)
 
   while (users.size < count) {
       const name = `${genrateRendomstring(5)} ${genrateRendomstring(7)}`;
@@ -42,3 +43,22 @@ exports.ranndomUser = (count)=>{
   return Array.from(users).map(user => JSON.parse(user));
 
 }
+
+
+function UniqueUsers(count) {
+  const users = [];
+  console.log("users" , users)
+  let size = 0
+
+  while (size < count) {
+      const name = `${generateRandomString(5)} ${generateRandomString(7)}`;
+      const email = `${generateRandomString(10)}@example.com`;
+      // users.add(JSON.stringify({ name, email }));
+      users.push(JSON.stringify({ name, email }));
+      size++;
+  }
+
+  // return Array.from(users).map(user => JSON.parse(user));
+  return users
+}
+
