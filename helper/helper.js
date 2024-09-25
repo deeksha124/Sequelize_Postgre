@@ -18,3 +18,27 @@ exports.chunkArray = (array, chunkSize) => {
   return result;
 }
 
+
+function genrateRendomstring(length){
+  const characters = 'abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ';
+  let result = '';
+  for(let i =0 ; i < length;i++)
+  {
+    result += characters.charAt(Math.floor(Math.random()* characters.length))
+  }
+  return result;
+}
+
+
+exports.ranndomUser = (count)=>{
+  const users = new Set();
+
+  while (users.size < count) {
+      const name = `${genrateRendomstring(5)} ${genrateRendomstring(7)}`;
+      const email = `${genrateRendomstring(10)}@example.com`;
+      users.add(JSON.stringify({ name, email }));
+  }
+
+  return Array.from(users).map(user => JSON.parse(user));
+
+}

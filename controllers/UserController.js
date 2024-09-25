@@ -60,12 +60,16 @@ exports.delete = async (req, res) => {
 const bulkProcess = async (usersData) => {
   // Chunk the data
   const chunkedData = helper.chunkArray(usersData, 50);
+ 
+  
   await sequelize.transaction(async (transaction) => {
+    console.log("chunkedData" , chunkedData.length)
 
   // for (const chunk of chunkedData)
     for (let chunk = 0; chunk > chunkedData.length;i++) {
 
       console.log("chunk-----" , chunk)
+      console.log(`chunkedData ${i}` , chunkedData[i])
     // await sequelize.transaction(async (transaction) => {
       const upsertPromises = []; // Array to hold promises
       
@@ -75,6 +79,8 @@ const bulkProcess = async (usersData) => {
         const upsertPromise = await User.upsert(user, { transaction });
         upsertPromises.push(upsertPromise);
       }
+
+      console.log("upsertPromises-----------------")
       await Promise.allSettled(upsertPromises);
     // });
   }
@@ -87,6 +93,7 @@ console.log("Data saved successfully")
 exports.insertData = async (req, res) => {
   try {
     const usersData = req.body;
+    // const usersData = helper.ranndomUser(5000)
 
     if (!Array.isArray(usersData) || usersData.length === 0) {
       return res
