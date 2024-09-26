@@ -57,71 +57,50 @@ exports.delete = async (req, res) => {
   }
 };
 
-// const bulkProcess = async (usersData) => {
-//   // Chunk the data
-//   const chunkedData = helper.chunkArray(usersData, 50);
- 
-  
-//   await sequelize.transaction(async (transaction) => {
-//     console.log("chunkedData" , chunkedData.length)
 
-//   // for (const chunk of chunkedData)
-//     for (let chunk = 0; chunk > chunkedData.length;i++) {
+const testFunction = async(number_of_Data) => {
+  const usersData1 = helper.ranndomUser(parseInt(number_of_Data));
 
-//       console.log("chunk-----" , chunk)
-//       console.log(`chunkedData ${i}` , chunkedData[i])
-//     // await sequelize.transaction(async (transaction) => {
-//       const upsertPromises = []; // Array to hold promises
-      
+  console.log("inside test function" , usersData1)
+  return usersData1
 
-//       for (let i = 0; i < chunk.length; i++) {
-//         const user = chunk[i];
-//         const upsertPromise = await User.upsert(user, { transaction });
-//         upsertPromises.push(upsertPromise);
-//       }
-
-//       console.log("upsertPromises-----------------")
-//       await Promise.allSettled(upsertPromises);
-//     // });
-//   }
- 
-// })
-// console.log("Data saved successfully")
-
-// };
+}
 
 
 
 
 const bulkProcess = async (usersData) => {
   // Chunk the data
-  const usersData1 = helper.ranndomUser(100000);
+  const usersData1 = await testFunction(100000);
+  console.log("inside bulkProcess" , usersData1)
   const chunkedData = helper.chunkArray(usersData1, 50);
-  
-  const a = Date.now(); 
-  await sequelize.transaction(async (transaction) => {
-    console.log("chunkedData length:", chunkedData.length);
 
-    for (let i = 0; i < chunkedData.length; i++) {
-      const chunk = chunkedData[i];
-      console.log("Processing chunk:", i);
-      console.log(`chunkedData ${i}:`, chunk);
-      
+  const a = Date.now();
+  // await sequelize.transaction(async (transaction) => {
+  console.log("chunkedData length:", chunkedData.length);
+
+  for (let i = 0; i < chunkedData.length; i++) {
+    const chunk = chunkedData[i];
+    console.log("Processing chunk:", i);
+    console.log(`chunkedData ${i}:`, chunk);
+
+    await sequelize.transaction(async (transaction) => {
       const upsertPromises = []; // Array to hold promises
 
       for (const user of chunk) {
-        const upsertPromise = User.upsert(user, { transaction });
+        const upsertPromise = await User.upsert(user, { transaction });
         upsertPromises.push(upsertPromise);
       }
 
       console.log("Waiting for upsert promises to settle...");
       await Promise.allSettled(upsertPromises);
-    }
-  });
-  
-  const b = Date.now(); // End time after the transaction
+    });
+  }
+  // });
 
-  const timeTaken = b - a; // Calculate the time taken in milliseconds
+  const b = Date.now();
+
+  const timeTaken = b - a;
 
   console.log("Start time:", a);
   console.log("End time:", b);
@@ -130,15 +109,19 @@ const bulkProcess = async (usersData) => {
   console.log("Data saved successfully");
 };
 
+
+
 exports.insertData = async (req, res) => {
   try {
     const usersData = req.body;
 
     if (!Array.isArray(usersData) || usersData.length === 0) {
-      return res.status(400).json({ message: "Invalid input: expected an array of users." });
+      return res
+        .status(400)
+        .json({ message: "Invalid input: expected an array of users." });
     }
 
-     bulkProcess(usersData); // Await the bulkProcess call
+    bulkProcess(usersData); 
 
     // Send immediate response
     res.status(202).json({ message: "Data saving in process" });
@@ -149,4 +132,12 @@ exports.insertData = async (req, res) => {
 };
 
 
-
+exports.insertDataCSV = async(req , res)=>{
+  try {
+    
+  } catch (error) {
+    console.error(error);
+    res.status(500).json({ message: "Error occurred", error });
+    
+  }
+}
