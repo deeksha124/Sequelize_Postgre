@@ -69,45 +69,44 @@ const testFunction = async(number_of_Data) => {
 
 
 
-const bulkProcess = async (usersData) => {
-  // Chunk the data
-  const usersData1 = await testFunction(100000);
-  console.log("inside bulkProcess" , usersData1)
-  const chunkedData = helper.chunkArray(usersData1, 50);
+// const bulkProcess = async (usersData) => {
+//   // Chunk the data
+//   const usersData1 = await testFunction(100000);
+//   console.log("inside bulkProcess" , usersData1)
+//   const chunkedData = helper.chunkArray(usersData1, 50);
 
-  const a = Date.now();
-  // await sequelize.transaction(async (transaction) => {
-  console.log("chunkedData length:", chunkedData.length);
+//   const a = Date.now();
+//   // await sequelize.transaction(async (transaction) => {
+//   console.log("chunkedData length:", chunkedData.length);
 
-  for (let i = 0; i < chunkedData.length; i++) {
-    const chunk = chunkedData[i];
-    console.log("Processing chunk:", i);
-    console.log(`chunkedData ${i}:`, chunk);
+//   for (let i = 0; i < chunkedData.length; i++) {
+//     const chunk = chunkedData[i];
+//     console.log("Processing chunk:", i);
+//     console.log(`chunkedData ${i}:`, chunk);
 
-    await sequelize.transaction(async (transaction) => {
-      const upsertPromises = []; // Array to hold promises
+//     await sequelize.transaction(async (transaction) => {
+//       const upsertPromises = []; // Array to hold promises
 
-      for (const user of chunk) {
-        const upsertPromise = await User.upsert(user, { transaction });
-        upsertPromises.push(upsertPromise);
-      }
+//       for (const user of chunk) {
+//          upsertPromises.push(await User.upsert(user, { transaction }));
+//       }
 
-      console.log("Waiting for upsert promises to settle...");
-      await Promise.allSettled(upsertPromises);
-    });
-  }
-  // });
+//       console.log("Waiting for upsert promises to settle...");
+//       await Promise.allSettled(upsertPromises);
+//     });
+//   }
+//   // });
 
-  const b = Date.now();
+//   const b = Date.now();
 
-  const timeTaken = b - a;
+//   const timeTaken = b - a;
 
-  console.log("Start time:", a);
-  console.log("End time:", b);
-  console.log("Time taken for data saving:", timeTaken, "milliseconds");
+//   console.log("Start time:", a);
+//   console.log("End time:", b);
+//   console.log("Time taken for data saving:", timeTaken, "milliseconds");
 
-  console.log("Data saved successfully");
-};
+//   console.log("Data saved successfully");
+// };
 
 
 
@@ -132,12 +131,49 @@ exports.insertData = async (req, res) => {
 };
 
 
-exports.insertDataCSV = async(req , res)=>{
-  try {
-    
-  } catch (error) {
-    console.error(error);
-    res.status(500).json({ message: "Error occurred", error });
-    
+
+
+
+const bulkProcess = async (usersData) => {
+  // Chunk the data
+  const usersData1 = await testFunction(100000);
+  console.log("inside bulkProcess", usersData1);
+  const chunkedData = helper.chunkArray(usersData1, 50);
+
+  const a = Date.now();
+  console.log("chunkedData length:", chunkedData.length);
+
+  for (let i = 0; i < chunkedData.length; i++) {
+    const chunk = chunkedData[i];
+    console.log("Processing chunk:", i);
+    console.log(`chunkedData ${i}:`, chunk);
+
+    await sequelize.transaction(async (transaction) => {
+      const upsertPromises = []; // Array to hold functions
+
+      for (const user of chunk) {
+        
+        upsertPromises.push(await User.upsert(user, { transaction }));
+      }
+
+      console.log("Waiting for upsert promises to settle...");
+
+      const results = [];
+      for (const upsertFunc of upsertPromises) {
+        results.push( upsertFunc);
+      }
+
+      const settledResults = await Promise.allSettled(results);
+      console.log("Upsert results:", settledResults);
+    });
   }
-}
+
+  const b = Date.now();
+  const timeTaken = b - a;
+
+  console.log("Start time:", a);
+  console.log("End time:", b);
+  console.log("Time taken for data saving:", timeTaken, "milliseconds");
+
+  console.log("Data saved successfully");
+};
