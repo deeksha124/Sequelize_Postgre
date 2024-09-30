@@ -14,5 +14,6 @@ router.put('/:id', UserController.update);
 router.delete('/:id', UserController.delete);
 router.post('/insertdata' , UserController.insertData)
 router.post('/upload/csv' , upload.single("file"), csvController.uploadDataCSV)
+router.post('/importBulkDatafromCSV',upload.single("file") , csvController.importBulkDatafromCSV)
 
 module.exports = router;

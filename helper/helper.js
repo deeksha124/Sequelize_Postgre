@@ -62,3 +62,32 @@ function UniqueUsers(count) {
   return users
 }
 
+
+
+
+
+const fs = require('fs');
+
+const createCSV = (numRecords) => {
+  const records = [];
+  records.push('name,email,address,age,gender'); // CSV header
+
+  for (let i = 0; i < numRecords; i++) {
+    const name = `deeksha${i}`;
+    const email =`test${i + 1}@gmail.com`;
+    const address = `fakeraddress${i}`;
+    const age  = Math.floor(Math.random() * (80 - 18 + 1)) + 18;
+    const options = ['f', 'M'];
+    const gender = options[Math.floor(Math.random() * options.length)];
+
+    records.push(`${name},${email},${address},${age},${gender}`);
+  }
+
+
+
+  const csvContent = records.join('\n');
+  fs.writeFileSync('records.csv', csvContent, 'utf8');
+  console.log('CSV file created successfully!');
+};
+
+createCSV(100000);
