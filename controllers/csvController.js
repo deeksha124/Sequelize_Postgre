@@ -89,8 +89,12 @@ exports.uploadDataCSV = async (req, res) => {
                 // Create a UserInfo record associated with the user
                 await Userinfo.create({
                     address: item.address,
-                    age: parseInt(item.age), // Ensure age is an integer
+                    age: parseInt(item.age), 
                     gender: item.gender,
+                    city : item.city,
+                    zip : item.zip,
+                    state : item.state,
+                    country : item.country,
                     userId: user.id, // Link to the created user
                 });
             }
@@ -112,4 +116,96 @@ exports.uploadDataCSV = async (req, res) => {
     }
   }
   
+  
+
+
+
+  
+  // exports.importBulkDatafromCSV = async (req, res) => {
+  //   try {
+  //     if (!req.file) {
+  //       return res.status(400).send("Please upload a CSV file!");
+  //     }
+  
+  //     let results = [];
+  //     const path = `${basedir}/uploads/${req.file.filename}`;
+  
+  //     fs.createReadStream(path)
+  //       .pipe(csv.parse({ headers: true }))
+  //       .on('data', (data) => results.push(data))
+  //       .on('end', async () => {
+  //         try {
+  //           console.log("Results:", results);
+  
+  //           const usersToCreate = [];
+  //           const userInfosToCreate = [];
+  
+  //           for (const item of results) {
+  //             // Check if required fields are present
+  //             if (!item.name || !item.email || !item.city) {
+  //               console.error('Missing required field in item:', item);
+  //               continue; // Skip this record
+  //             }
+  
+  //             // Check if user already exists
+  //             const existingUser = await User.findOne({ where: { email: item.email } });
+  //             if (existingUser) {
+  //               console.warn(`User with email ${item.email} already exists. Skipping...`);
+  //               continue; // Skip this record or handle it accordingly
+  //             }
+  
+  //             // Create a User record
+  //             usersToCreate.push({ name: item.name, email: item.email });
+
+  //             console.log("item.address--" , item.address)
+  
+  //             // Create a UserInfo record associated with the user
+  //             userInfosToCreate.push({
+  //               address: item.address ,
+  //               city: item.city ,
+  //               zip: item.zip ,
+  //               state: item.state,
+  //               country: item.country ,
+  //               age: parseInt(item.age, 10) || null, // Ensure age is an integer
+  //               gender: item.gender ,
+  //               userId: null, // Placeholder for userId to be filled after creation
+  //             });
+  //           }
+
+
+  //           console.log("\\\\\\\\\\\----" , usersToCreate)
+
+  //           console.log("=======>>>>",userInfosToCreate)
+  
+  //           // Bulk insert users
+  //           const createdUsers = await User.bulkCreate(usersToCreate);
+  
+  //           // Fill in the userId for each UserInfo record
+  //           createdUsers.forEach((user, index) => {
+  //             userInfosToCreate[index].userId = user.id;
+  //           });
+
+            
+  
+  //           // Bulk insert user infos
+  //           await Userinfo.bulkCreate(userInfosToCreate);
+  
+  //           console.log('Data inserted successfully!');
+  //           res.status(200).send({ message: "Data inserted successfully!" });
+  
+  //         } catch (error) {
+  //           console.error('Error inserting data:', error);
+  //           res.status(500).send({ message: error.message || "Some error occurred while inserting data." });
+  //         }
+  //       })
+  //       .on('error', (error) => {
+  //         console.error('Error reading CSV file:', error);
+  //         res.status(500).send({ message: "Error reading CSV file." });
+  //       });
+  
+  //   } catch (error) {
+  //     console.error('General error:', error);
+  //     res.status(500).send({ message: error.message || "Some error occurred." });
+  //   }
+  // };
   

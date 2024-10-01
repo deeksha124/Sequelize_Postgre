@@ -1,5 +1,7 @@
 const { DataTypes } = require("sequelize");
-const sequelize = require("../config/config"); 
+const sequelize = require("../config/config");
+
+// Define the Tutorial model
 exports.Tutorial = sequelize.define(
   "Tutorial",
   {
@@ -23,6 +25,7 @@ exports.Tutorial = sequelize.define(
   }
 );
 
+// Define the User model
 exports.User = sequelize.define("User", {
   id: {
     type: DataTypes.INTEGER,
@@ -42,6 +45,7 @@ exports.User = sequelize.define("User", {
   timestamps: true,
 });
 
+// Define the Userinfo model
 exports.Userinfo = sequelize.define("Userinfo", {
   id: {
     type: DataTypes.INTEGER,
@@ -52,27 +56,42 @@ exports.Userinfo = sequelize.define("Userinfo", {
     type: DataTypes.INTEGER,
     allowNull: false,
     references: {
-      model: "Users", // Ensure this matches the model name
+      model: "Users", // Correct this to match the model name exactly
       key: "id",
     },
   },
   age: {
-    type: DataTypes.INTEGER, 
+    type: DataTypes.INTEGER,
     allowNull: false,
   },
-  address : {
-    type: DataTypes.STRING, 
+  address: {
+    type: DataTypes.STRING,
     allowNull: false,
-
+  },
+  city: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  zip: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  state: {
+    type: DataTypes.STRING,
+    allowNull: false,
+  },
+  country: {
+    type: DataTypes.STRING,
+    allowNull: false,
   },
   gender: {
-    type: DataTypes.STRING, 
+    type: DataTypes.STRING,
     allowNull: false,
   },
 }, {
   timestamps: true,
 });
 
-// Associations can be defined after model definitions if needed
+// Define associations
 exports.User.hasOne(exports.Userinfo, { foreignKey: 'userId' });
 exports.Userinfo.belongsTo(exports.User, { foreignKey: 'userId' });
