@@ -1,3 +1,5 @@
+const fs = require('fs');
+//  const csv = require('csv-parser');
 // let blankarr = [];
 // for (let i = 0; i < 1000; i++) {
 //   blankarr.push({
@@ -55,7 +57,6 @@ function UniqueUsers(count) {
   return users;
 }
 
-const fs = require("fs");
 
 const createCSV = (numRecords) => {
   const records = [];
@@ -83,4 +84,34 @@ const createCSV = (numRecords) => {
   console.log("CSV file created successfully!");
 };
 
-createCSV(10);
+// createCSV(10);
+
+
+
+
+
+
+
+const csv = require('fast-csv'); 
+
+exports.readfile = async (filePath) => {
+  const results = [];
+
+  try {
+    await new Promise((resolve, reject) => {
+      fs.createReadStream(filePath)
+        .pipe(csv.parse({ headers: true, trim: true })) 
+        .on('data', (data) => {
+          // Push the parsed data directly into results
+          results.push(data);
+        })
+        .on('end', () => resolve())
+        .on('error', (error) => reject(error));
+    });
+    
+    return results; 
+  } catch (error) {
+    console.error('Error reading the file:', error);
+    throw error;  
+  }
+};
