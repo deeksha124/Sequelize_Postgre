@@ -108,6 +108,8 @@ exports.readfile = async (filePath) => {
         .on('end', () => resolve())
         .on('error', (error) => reject(error));
     });
+
+    console.log("result------->>>>>" , results)
     
     return results; 
   } catch (error) {

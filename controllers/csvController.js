@@ -155,45 +155,66 @@ exports.importBulkDatafromCSV = async (req, res) => {
           age: item.age,
           gender: item.gender,
         });
+
+        user = await Userinfo.create({
+          address: item.address,
+          city: item.city,
+          zip: item.zip,
+          state: item.state,
+          country: item.country,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          userId: user.id,
+        })
       } else {
-        console.log(`User with email ${item.email} already exists. Skipping creation.`);
-        continue;
+        user = await Userinfo.create({
+          address: item.address,
+          city: item.city,
+          zip: item.zip,
+          state: item.state,
+          country: item.country,
+          latitude: item.latitude,
+          longitude: item.longitude,
+          userId: user.id,
+        })
+        // console.log(`User with email ${item.email} already exists. Skipping creation.`);
+        // continue;
       }
 
-      if (item.userinfo && item.userinfo.trim() !== "") {
-        try {
-          const userInfoArray = JSON.parse(item.userinfo);
-          console.log("userInfoArray:", userInfoArray);
+      // if (item.userinfo && item.userinfo.trim() !== "") {
+      //   try {
+      //     const userInfoArray = JSON.parse(item.userinfo);
+      //     console.log("userInfoArray:", userInfoArray);
 
-          for (const userinfo of userInfoArray) {
-            if (
-              !userinfo.address ||
-              !userinfo.city ||
-              !userinfo.zip ||
-              !userinfo.state ||
-              !userinfo.country
-            ) {
-              continue;
-            }
+      //     for (const userinfo of userInfoArray) {
+      //       if (
+      //         !userinfo.address ||
+      //         !userinfo.city ||
+      //         !userinfo.zip ||
+      //         !userinfo.state ||
+      //         !userinfo.country
+      //       ) {
+      //         continue;
+      //       }
 
-            await Userinfo.create({
-              address: userinfo.address,
-              city: userinfo.city,
-              zip: userinfo.zip,
-              state: userinfo.state,
-              country: userinfo.country,
-              latitude: userinfo.latitude,
-              longitude: userinfo.longitude,
-              userId: user.id,
-            });
-          }
-        } catch (jsonError) {
-          console.error(`Error parsing userInfo for ${item.email}:`, jsonError);
-          continue;
-        }
-      } else {
-        console.log(`userInfo is undefined or empty for ${item.email}. Skipping UserInfo creation.`);
-      }
+      //       await Userinfo.create({
+      //         address: userinfo.address,
+      //         city: userinfo.city,
+      //         zip: userinfo.zip,
+      //         state: userinfo.state,
+      //         country: userinfo.country,
+      //         latitude: userinfo.latitude,
+      //         longitude: userinfo.longitude,
+      //         userId: user.id,
+      //       });
+      //     }
+      //   } catch (jsonError) {
+      //     console.error(`Error parsing userInfo for ${item.email}:`, jsonError);
+      //     continue;
+      //   }
+      // } else {
+      //   console.log(`userInfo is undefined or empty for ${item.email}. Skipping UserInfo creation.`);
+      // }
     }
 
     console.log("Data inserted successfully!");
