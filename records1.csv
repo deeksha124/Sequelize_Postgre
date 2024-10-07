@@ -1,0 +1,3 @@
+email,name,age,gender,address1,city1,zip1,state1,country1,latitude1,longitude1,address2,city2,zip2,state2,country2,latitude2,longitude2,address3,city3,zip3,state3,country3,latitude3,longitude3,address4,city4,zip4,state4,country4,latitude4,longitude4
+jane.doe@example.com,Jane Doe,28,Female,123 Elm St,Springfield,62701,IL,USA,39.7817,-89.6501,456 Oak St,Shelbyville,62565,IL,USA,39.4013,-88.7879,789 Birch St,Capital City,62704,IL,USA,39.7983,-89.6544,654 Cedar St,Smalltown,62962,IL,USA,37.3000,-99.0000
+john.smith@example.com,John Smith,34,Male,789 Maple Ave,Metropolis,62960,IL,USA,37.1715,-88.1593,321 Pine St,Gotham,62960,IL,USA,37.1715,-88.1593,654 Cedar St,Smalltown,62962,IL,USA,37.3000,-66.0000

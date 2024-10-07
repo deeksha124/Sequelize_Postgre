@@ -1,5 +1,5 @@
 const fs = require('fs');
-//  const csv = require('csv-parser');
+ const csv = require('csv-parser');
 // let blankarr = [];
 // for (let i = 0; i < 1000; i++) {
 //   blankarr.push({
@@ -92,7 +92,7 @@ const createCSV = (numRecords) => {
 
 
 
-const csv = require('fast-csv'); 
+// const csv = require('fast-csv'); 
 
 exports.readfile = async (filePath) => {
   const results = [];
@@ -100,7 +100,7 @@ exports.readfile = async (filePath) => {
   try {
     await new Promise((resolve, reject) => {
       fs.createReadStream(filePath)
-        .pipe(csv.parse({ headers: true, trim: true })) 
+        .pipe(csv({ headers: true, trim: true })) 
         .on('data', (data) => {
           // Push the parsed data directly into results
           results.push(data);
@@ -109,7 +109,7 @@ exports.readfile = async (filePath) => {
         .on('error', (error) => reject(error));
     });
 
-    console.log("result------->>>>>" , results)
+    // console.log("result------->>>>>" , results)
     
     return results; 
   } catch (error) {
