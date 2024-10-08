@@ -97,11 +97,11 @@ exports.Userinfo = sequelize.define(
       allowNull: false,
     },
     latitude: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
     longitude: {
-      type: DataTypes.INTEGER,
+      type: DataTypes.STRING,
       allowNull: false,
     },
   },
