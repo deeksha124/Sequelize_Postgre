@@ -1,0 +1,5 @@
+name,email,age,gender,address,city,zip,state,country,latitude,longitude
+John Doe,john@example.com,30,Male,123 Main St,Springfield,12345,IL,USA,99999,0000
+Jane Smith,jane@example.com,28,Female,789 Maple Ave,Greenwood,67890,IN,USA,99999,0002
+John Doe,john@example.com,30,Male,456 Oak St,Springfield,12345,IL,USA,99999,0001
+Jane Smith,jane@example.com,28,Female,890 Pine St,Greenwood,67890,IN,USA,99999,0003
